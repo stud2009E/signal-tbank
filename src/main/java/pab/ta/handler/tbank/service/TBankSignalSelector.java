@@ -60,31 +60,43 @@ public class TBankSignalSelector implements SignalSelector {
                 ),
                 new SignalFilter(
                         Map.of(
-                                HOUR_4, List.of(RSI, CCI),
-                                DAY, List.of(RSI, CCI, MFI),
-                                WEEK, List.of(RSI, CCI)),
+                                HOUR_4, List.of(RSI, CCI, MFI),
+                                DAY, List.of(RSI, CCI, MFI)),
                         Direction.BUY
                 ),
                 new SignalFilter(
                         Map.of(
-                                HOUR_4, List.of(RSI, CCI),
-                                DAY, List.of(RSI, CCI, MFI),
-                                WEEK, List.of(RSI, CCI)),
+                                HOUR_4, List.of(RSI, CCI, MFI),
+                                DAY, List.of(RSI, CCI, MFI)),
                         Direction.SELL
                 ),
                 new SignalFilter(
                         Map.of(
-                                HOUR_4, List.of(RSI, CCI_EXTREMUM),
-                                DAY, List.of(RSI, CCI_EXTREMUM)),
+                                HOUR_4, List.of(CCI_EXTREMUM),
+                                DAY, List.of(RSI, CCI, MFI)),
+                        Direction.SELL
+                ),
+                new SignalFilter(
+                        Map.of(
+                                HOUR_4, List.of(CCI_EXTREMUM),
+                                DAY, List.of(RSI, CCI, MFI)),
                         Direction.BUY
                 ),
                 new SignalFilter(
                         Map.of(
-                                HOUR_4, List.of(RSI, CCI_EXTREMUM),
-                                DAY, List.of(RSI, CCI_EXTREMUM)),
+                                HOUR_2, List.of(CCI, MFI),
+                                HOUR_4, List.of(CCI, MFI)),
                         Direction.SELL
                 ),
-                new SignalFilter(Map.of(DAY, List.of(DVG)), Direction.SELL)
+                new SignalFilter(
+                        Map.of(
+                                HOUR_2, List.of(CCI, MFI),
+                                HOUR_4, List.of(CCI, MFI)),
+                        Direction.BUY
+                ),
+
+                new SignalFilter(Map.of(DAY, List.of(DVG)), Direction.SELL),
+                new SignalFilter(Map.of(DAY, List.of(DVG)), Direction.BUY)
         );
     }
 }

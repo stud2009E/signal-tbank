@@ -46,10 +46,12 @@ public class ProviderTBank implements DataProvider {
                 case CURRENCY -> getCurrencySeries(info, tf.from(), tf.to(), tf.interval());
             };
         } catch (RuntimeException ex) {
+            System.err.println(ex.getMessage());
             try {
-                Thread.sleep(3000);
+                Thread.sleep(60_000);
                 series = getSeries(identity);
-            } catch (InterruptedException ignored) {
+            } catch (InterruptedException e) {
+                System.err.println(ex.getMessage());
             }
         }
 
