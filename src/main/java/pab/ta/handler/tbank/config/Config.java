@@ -3,6 +3,7 @@ package pab.ta.handler.tbank.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.*;
+import pab.ta.handler.base.component.rule.BBMinWidthRuleWrapper;
 import pab.ta.handler.base.component.task.BaseSignalSelector;
 import ru.tinkoff.piapi.core.InvestApi;
 
@@ -12,7 +13,7 @@ import ru.tinkoff.piapi.core.InvestApi;
         excludeFilters = {
                 @ComponentScan.Filter(
                         type = FilterType.ASSIGNABLE_TYPE,
-                        classes = {BaseSignalSelector.class}
+                        classes = {BaseSignalSelector.class, BBMinWidthRuleWrapper.class}
                 )
         }
 )

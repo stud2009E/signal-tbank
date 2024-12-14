@@ -1,8 +1,16 @@
-service:
+application:
   description: t-bank handle data series into signals
+  api:
+    version: v1
+
+spring:
+  application:
+    name: tracker
 
 server:
   port: 8089
+  servlet:
+    context-path: /ta
 
 signal:
   live-time-minutes: 10
@@ -10,7 +18,7 @@ signal:
 cron:
   disable: "-"
   task:
-    2H: "0 */15 9-23 * * MON-FRI"
-    4H: "0 */15 9-23 * * MON-FRI"
-    1D: "0 */15 9-23 * * MON-FRI"
-    1W: "0 */15 9-23 * * MON-FRI"
+    2H: "0 */20 9-23 * * 1-5"
+    4H: "0 */20 9-23 * * 1-5"
+    1D: "0 */20 9-23 * * 1-5"
+    1W: "0 */20 9-23 * * 1-5"
