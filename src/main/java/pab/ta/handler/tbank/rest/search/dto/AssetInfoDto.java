@@ -1,11 +1,9 @@
-package pab.ta.handler.tbank.rest.search;
+package pab.ta.handler.tbank.rest.search.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import pab.ta.handler.base.asset.AssetType;
 
-@Setter
 @Getter
 @AllArgsConstructor
 public class AssetInfoDto {

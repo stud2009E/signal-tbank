@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pab.ta.handler.base.asset.AssetInfo;
 import pab.ta.handler.base.asset.AssetType;
 import pab.ta.handler.tbank.provider.SearchTProvider;
+import pab.ta.handler.tbank.rest.search.dto.AssetInfoDto;
 
 import java.util.List;
 import java.util.Optional;
