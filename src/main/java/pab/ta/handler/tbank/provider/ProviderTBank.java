@@ -8,11 +8,10 @@ import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.BaseBarSeriesBuilder;
 import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
-import pab.ta.handler.base.asset.AssetInfo;
-import pab.ta.handler.base.asset.CandleInterval;
-import pab.ta.handler.base.asset.SeriesIdentity;
-import pab.ta.handler.base.asset.TimeFrame;
-import pab.ta.handler.base.provider.DataProvider;
+import pab.ta.handler.base.lib.asset.AssetInfo;
+import pab.ta.handler.base.lib.asset.CandleInterval;
+import pab.ta.handler.base.lib.asset.TimeFrame;
+import pab.ta.handler.base.lib.asset.provider.DataProvider;
 import pab.ta.handler.tbank.provider.util.Utils;
 import ru.tinkoff.piapi.contract.v1.HistoricCandle;
 import ru.tinkoff.piapi.contract.v1.Quotation;
@@ -32,24 +31,26 @@ public class ProviderTBank implements DataProvider {
     private final InvestApi investApi;
 
     @Override
-    public BarSeries getSeries(SeriesIdentity identity) {
-        AssetInfo info = identity.info();
-        TimeFrame tf = identity.tf();
+    public BarSeries getSeries(AssetInfo assetInfo, TimeFrame timeFrame) {
 
         BarSeries series = new BaseBarSeries();
 
         try {
-            series = switch (info.type()) {
-                case SHARE -> getShareSeries(info, tf.from(), tf.to(), tf.interval());
-                case INDEX -> getIndexSeries(info, tf.from(), tf.to(), tf.interval());
-                case FUTURE -> getFutureSeries(info, tf.from(), tf.to(), tf.interval());
-                case CURRENCY -> getCurrencySeries(info, tf.from(), tf.to(), tf.interval());
+            series = switch (assetInfo.getType()) {
+                case SHARE ->
+                        getShareSeries(assetInfo, timeFrame.getFrom(), timeFrame.getTo(), timeFrame.getInterval());
+                case INDEX ->
+                        getIndexSeries(assetInfo, timeFrame.getFrom(), timeFrame.getTo(), timeFrame.getInterval());
+                case FUTURE ->
+                        getFutureSeries(assetInfo, timeFrame.getFrom(), timeFrame.getTo(), timeFrame.getInterval());
+                case CURRENCY ->
+                        getCurrencySeries(assetInfo, timeFrame.getFrom(), timeFrame.getTo(), timeFrame.getInterval());
             };
         } catch (RuntimeException ex) {
             System.err.println(ex.getMessage());
             try {
                 Thread.sleep(60_000);
-                series = getSeries(identity);
+                series = getSeries(assetInfo, timeFrame);
             } catch (InterruptedException e) {
                 System.err.println(ex.getMessage());
             }
@@ -91,12 +92,11 @@ public class ProviderTBank implements DataProvider {
         Instant instantFrom = from.atZone(ZoneId.systemDefault()).toInstant();
         Instant instantTo = to.atZone(ZoneId.systemDefault()).toInstant();
 
-
         List<HistoricCandle> candles = investApi.getMarketDataService()
-                .getCandlesSync(data.id(), instantFrom, instantTo, Utils.toTBankInterval(candleInterval));
+                .getCandlesSync(data.getId(), instantFrom, instantTo, Utils.toTBankInterval(candleInterval));
 
         BarSeries series = new BaseBarSeriesBuilder()
-                .withName(data.ticker() + " " + candleInterval.name())
+                .withName(data.getTicker() + " " + candleInterval.name())
                 .withNumTypeOf(DecimalNum.class)
                 .build();
 

@@ -2,7 +2,7 @@ package pab.ta.handler.tbank.rest.search.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import pab.ta.handler.base.asset.AssetType;
+import pab.ta.handler.base.lib.asset.AssetType;
 
 @Getter
 @AllArgsConstructor

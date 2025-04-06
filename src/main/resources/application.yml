@@ -14,8 +14,8 @@ server:
 
 eureka:
   client:
-    registerWithEureka: true
-    fetchRegistry: true
+    registerWithEureka: false
+    fetchRegistry: false
     serviceUrl:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
 
@@ -27,6 +27,6 @@ cron:
   disable: "-"
   task:
     2H: "0 */20 9-23 * * 1-5"
-    4H: "0 */20 9-23 * * 1-5"
-    1D: "0 */20 9-23 * * 1-5"
+    4H: "0 */15 9-23 * * 1-7"
+    1D: "0 */15 9-23 * * 1-7"
     1W: "0 */20 9-23 * * 1-5"

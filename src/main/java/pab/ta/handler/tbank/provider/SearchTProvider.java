@@ -2,10 +2,10 @@ package pab.ta.handler.tbank.provider;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pab.ta.handler.base.asset.AssetInfo;
-import pab.ta.handler.base.asset.AssetType;
-import pab.ta.handler.base.asset.BaseAssetInfo;
-import pab.ta.handler.base.provider.AssetInfoSearchProvider;
+import pab.ta.handler.base.lib.asset.AssetInfo;
+import pab.ta.handler.base.lib.asset.AssetType;
+import pab.ta.handler.base.lib.asset.BaseAssetInfo;
+import pab.ta.handler.base.lib.asset.provider.AssetInfoSearchProvider;
 import ru.tinkoff.piapi.contract.v1.InstrumentType;
 import ru.tinkoff.piapi.core.InvestApi;
 

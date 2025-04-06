@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pab.ta.handler.base.asset.AssetInfo;
-import pab.ta.handler.base.asset.AssetType;
+import pab.ta.handler.base.lib.asset.AssetInfo;
 import pab.ta.handler.tbank.provider.SearchTProvider;
 import pab.ta.handler.tbank.rest.search.dto.AssetInfoDto;
 
 import java.util.List;
 import java.util.Optional;
+
+import static pab.ta.handler.base.lib.asset.AssetType.*;
 
 @RestController
 @RequestMapping("/api/${application.api.version}/data")
@@ -33,10 +34,10 @@ public class SearchController {
         List<AssetInfo> assetInfoList = provider.search(query);
 
         List<AssetInfoDto> assets = assetInfoList.stream()
-                .filter(info -> info.type() == AssetType.FUTURE
-                        || info.type() == AssetType.SHARE
-                        || info.type() == AssetType.CURRENCY)
-                .map(info -> new AssetInfoDto(info.ticker(), info.type(), info.description()))
+                .filter(info -> info.getType() == FUTURE
+                        || info.getType() == SHARE
+                        || info.getType() == CURRENCY)
+                .map(info -> new AssetInfoDto(info.getTicker(), info.getType(), info.getDescription()))
                 .toList();
 
         return ResponseEntity.of(Optional.of(assets));

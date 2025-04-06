@@ -2,12 +2,11 @@ package pab.ta.handler.tbank.provider;
 
 import com.google.protobuf.Timestamp;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-import pab.ta.handler.base.asset.AssetInfo;
-import pab.ta.handler.base.asset.AssetType;
-import pab.ta.handler.base.asset.BaseAssetInfo;
-import pab.ta.handler.base.provider.AssetInfoProvider;
+import pab.ta.handler.base.lib.asset.AssetInfo;
+import pab.ta.handler.base.lib.asset.AssetType;
+import pab.ta.handler.base.lib.asset.BaseAssetInfo;
+import pab.ta.handler.base.lib.asset.provider.AssetInfoProvider;
 import ru.tinkoff.piapi.contract.v1.InstrumentStatus;
 import ru.tinkoff.piapi.core.InvestApi;
 
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-@Cacheable("future")
 @Component
 @RequiredArgsConstructor
 public class FutureTProvider implements AssetInfoProvider {
@@ -41,7 +39,8 @@ public class FutureTProvider implements AssetInfoProvider {
 
                         return LocalDate.now().plusMonths(3).isAfter(lastTradeDate);
                     })
-                    .map(asset -> new BaseAssetInfo(asset.getUid(), asset.getTicker(), AssetType.FUTURE, asset.getName()))
+                    .map(asset ->
+                            new BaseAssetInfo(asset.getUid(), asset.getTicker(), AssetType.FUTURE, asset.getName()))
                     .collect(Collectors.toList());
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
