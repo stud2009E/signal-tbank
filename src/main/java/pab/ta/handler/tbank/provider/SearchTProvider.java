@@ -6,6 +6,7 @@ import pab.ta.handler.base.lib.asset.AssetInfo;
 import pab.ta.handler.base.lib.asset.AssetType;
 import pab.ta.handler.base.lib.asset.BaseAssetInfo;
 import pab.ta.handler.base.lib.asset.provider.AssetInfoSearchProvider;
+import pab.ta.handler.tbank.exception.BrokerApiException;
 import ru.tinkoff.piapi.contract.v1.InstrumentType;
 import ru.tinkoff.piapi.core.InvestApi;
 
@@ -26,13 +27,19 @@ public class SearchTProvider implements AssetInfoSearchProvider {
         try {
             return future.get()
                     .stream()
+                    .filter(instrumentShort -> switch (instrumentShort.getInstrumentKind()) {
+                        case InstrumentType.INSTRUMENT_TYPE_FUTURES,
+                            InstrumentType.INSTRUMENT_TYPE_CURRENCY,
+                            InstrumentType.INSTRUMENT_TYPE_SHARE -> true;
+                        default -> false;
+                    })
                     .map(instrumentShort -> {
-
                         AssetType type = switch (instrumentShort.getInstrumentKind()) {
                             case InstrumentType.INSTRUMENT_TYPE_FUTURES -> AssetType.FUTURE;
                             case InstrumentType.INSTRUMENT_TYPE_CURRENCY -> AssetType.CURRENCY;
                             case InstrumentType.INSTRUMENT_TYPE_SHARE -> AssetType.SHARE;
-                            default -> null;
+                            default -> throw new IllegalArgumentException("No handler for type " +
+                                    instrumentShort.getInstrumentKind());
                         };
 
                         return new BaseAssetInfo(
@@ -42,8 +49,8 @@ public class SearchTProvider implements AssetInfoSearchProvider {
                                 instrumentShort.getName());
                     })
                     .collect(Collectors.toList());
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
+        } catch (InterruptedException | ExecutionException ex) {
+            throw new BrokerApiException(ex);
         }
     }
 }

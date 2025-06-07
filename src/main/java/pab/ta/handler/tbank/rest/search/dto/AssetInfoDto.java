@@ -1,6 +1,7 @@
 package pab.ta.handler.tbank.rest.search.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import pab.ta.handler.base.lib.asset.AssetType;
 
@@ -8,6 +9,7 @@ import pab.ta.handler.base.lib.asset.AssetType;
 @AllArgsConstructor
 public class AssetInfoDto {
 
+    @EqualsAndHashCode.Include
     private String ticker;
 
     private AssetType type;
