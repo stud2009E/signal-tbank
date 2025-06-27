@@ -17,6 +17,7 @@ import pab.ta.handler.tbank.rest.search.dto.IndicatorDto;
 import pab.ta.handler.tbank.rest.search.dto.TimeframeDto;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +46,7 @@ public class SearchController {
                         || info.getType() == SHARE
                         || info.getType() == CURRENCY)
                 .map(info -> new AssetInfoDto(info.getTicker(), info.getType(), info.getDescription()))
+                .sorted(Comparator.comparingInt(asset -> asset.getType().ordinal()))
                 .toList();
 
         return ResponseEntity.of(Optional.of(assets));
