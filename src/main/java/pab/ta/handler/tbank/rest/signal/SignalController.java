@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pab.ta.handler.base.lib.task.Store;
+import pab.ta.handler.base.lib.task.SignalStore;
 import pab.ta.handler.tbank.rest.signal.dto.SignalDto;
 
 import java.time.ZonedDateTime;
@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SignalController {
 
-    private final Store store;
+    private final SignalStore store;
 
     /**
      * Get signals no later than now - {secondsBefore} moment.
@@ -31,14 +31,14 @@ public class SignalController {
     public ResponseEntity<List<SignalDto>> signals(@RequestParam(name = "secondBefore") Long secondsBefore) {
         ZonedDateTime moment = ZonedDateTime.now().minusSeconds(secondsBefore);
 
-        List<SignalDto> signals = store.get().stream()
+        List<SignalDto> signals = store.getAll().stream()
                 .filter(signal -> signal.getCreatedAt().isAfter(moment))
                 .map(signal ->
                         new SignalDto()
                                 .setTicker(signal.getTicker())
                                 .setType(signal.getType().name())
                                 .setInterval(signal.getInterval().name())
-                                .setIndicatorId(signal.getIndicatorId())
+                                .setName(signal.getName())
                                 .setCreatedAt(signal.getCreatedAt())
                                 .setDirection(signal.getDirection().name())
                 )

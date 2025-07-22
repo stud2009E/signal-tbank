@@ -16,7 +16,7 @@ public class SignalDto {
 
     String interval;
 
-    String indicatorId;
+    String name;
 
     String direction;
 

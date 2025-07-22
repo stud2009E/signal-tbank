@@ -7,8 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import pab.ta.handler.base.lib.asset.AssetInfo;
 import pab.ta.handler.base.lib.asset.AssetType;
-import pab.ta.handler.base.lib.asset.BaseAssetInfo;
-import pab.ta.handler.base.lib.asset.provider.AssetInfoProvider;
+import pab.ta.handler.base.lib.provider.AssetInfoProvider;
 import pab.ta.handler.tbank.exception.BrokerApiException;
 import ru.tinkoff.piapi.contract.v1.InstrumentStatus;
 import ru.tinkoff.piapi.contract.v1.RealExchange;
@@ -55,10 +54,10 @@ public class AssetInfoTProvider implements AssetInfoProvider {
             return future.get()
                     .stream()
                     .map(asset ->
-                            new BaseAssetInfo(asset.getUid(), asset.getTicker(), AssetType.CURRENCY, asset.getName()))
+                            new AssetInfo(asset.getUid(), asset.getTicker(), AssetType.CURRENCY, asset.getName()))
                     .collect(Collectors.toList());
         } catch (InterruptedException | ExecutionException ex) {
-            throw new BrokerApiException(ex);
+            throw new BrokerApiException(ex.getMessage());
         }
     }
 
@@ -83,10 +82,10 @@ public class AssetInfoTProvider implements AssetInfoProvider {
                         return LocalDate.now().plusMonths(3).isAfter(lastTradeDate);
                     })
                     .map(asset ->
-                            new BaseAssetInfo(asset.getUid(), asset.getTicker(), AssetType.FUTURE, asset.getName()))
+                            new AssetInfo(asset.getUid(), asset.getTicker(), AssetType.FUTURE, asset.getName()))
                     .collect(Collectors.toList());
         } catch (InterruptedException | ExecutionException ex) {
-            throw new BrokerApiException(ex);
+            throw new BrokerApiException(ex.getMessage());
         }
     }
 
@@ -106,10 +105,10 @@ public class AssetInfoTProvider implements AssetInfoProvider {
                             asset.getRealExchange().equals(RealExchange.REAL_EXCHANGE_MOEX)
                                     && asset.getClassCode().equals("TQBR"))
                     .map(asset ->
-                            new BaseAssetInfo(asset.getUid(), asset.getTicker(), SHARE, asset.getName()))
+                            new AssetInfo(asset.getUid(), asset.getTicker(), SHARE, asset.getName()))
                     .collect(Collectors.toList());
         } catch (InterruptedException | ExecutionException ex) {
-            throw new BrokerApiException(ex);
+            throw new BrokerApiException(ex.getMessage());
         }
     }
 }

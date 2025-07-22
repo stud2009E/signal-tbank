@@ -1,11 +1,11 @@
 package pab.ta.handler.tbank.provider;
 
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pab.ta.handler.base.lib.asset.AssetInfo;
 import pab.ta.handler.base.lib.asset.AssetType;
-import pab.ta.handler.base.lib.asset.BaseAssetInfo;
-import pab.ta.handler.base.lib.asset.provider.AssetInfoSearchProvider;
+import pab.ta.handler.base.lib.provider.AssetInfoSearchProvider;
 import pab.ta.handler.tbank.exception.BrokerApiException;
 import ru.tinkoff.piapi.contract.v1.InstrumentType;
 import ru.tinkoff.piapi.core.InvestApi;
@@ -21,7 +21,7 @@ public class SearchTProvider implements AssetInfoSearchProvider {
     private final InvestApi investApi;
 
     @Override
-    public List<AssetInfo> search(String query) {
+    public List<AssetInfo> search(@Nonnull String query) {
         var future = investApi.getInstrumentsService().findInstrument(query);
 
         try {
@@ -29,8 +29,8 @@ public class SearchTProvider implements AssetInfoSearchProvider {
                     .stream()
                     .filter(instrumentShort -> switch (instrumentShort.getInstrumentKind()) {
                         case InstrumentType.INSTRUMENT_TYPE_FUTURES,
-                            InstrumentType.INSTRUMENT_TYPE_CURRENCY,
-                            InstrumentType.INSTRUMENT_TYPE_SHARE -> true;
+                                InstrumentType.INSTRUMENT_TYPE_CURRENCY,
+                                InstrumentType.INSTRUMENT_TYPE_SHARE -> true;
                         default -> false;
                     })
                     .map(instrumentShort -> {
@@ -42,7 +42,7 @@ public class SearchTProvider implements AssetInfoSearchProvider {
                                     instrumentShort.getInstrumentKind());
                         };
 
-                        return new BaseAssetInfo(
+                        return new AssetInfo(
                                 instrumentShort.getUid(),
                                 instrumentShort.getTicker(),
                                 type,
@@ -50,7 +50,7 @@ public class SearchTProvider implements AssetInfoSearchProvider {
                     })
                     .collect(Collectors.toList());
         } catch (InterruptedException | ExecutionException ex) {
-            throw new BrokerApiException(ex);
+            throw new BrokerApiException(ex.getMessage());
         }
     }
 }

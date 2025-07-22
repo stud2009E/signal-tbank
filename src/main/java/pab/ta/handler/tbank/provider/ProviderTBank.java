@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.ta4j.core.BarSeries;
-import org.ta4j.core.BaseBar;
-import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.BaseBarSeriesBuilder;
 import org.ta4j.core.num.DecimalNum;
 import pab.ta.handler.base.lib.asset.AssetInfo;
 import pab.ta.handler.base.lib.asset.CandleInterval;
 import pab.ta.handler.base.lib.asset.TimeFrame;
-import pab.ta.handler.base.lib.asset.provider.DataProvider;
+import pab.ta.handler.base.lib.provider.DataProvider;
 import pab.ta.handler.tbank.provider.util.Utils;
 import ru.tinkoff.piapi.contract.v1.HistoricCandle;
 import ru.tinkoff.piapi.core.InvestApi;
@@ -31,7 +29,9 @@ public class ProviderTBank implements DataProvider {
     @Override
     public BarSeries getSeries(AssetInfo assetInfo, TimeFrame timeFrame) {
 
-        BarSeries series = new BaseBarSeries();
+        BarSeries series = new BaseBarSeriesBuilder()
+                .withName(assetInfo.getTicker())
+                .build();
 
         try {
             series = getBarSeries(assetInfo, timeFrame.getFrom(), timeFrame.getTo(), timeFrame.getInterval());
@@ -58,7 +58,6 @@ public class ProviderTBank implements DataProvider {
 
         BarSeries series = new BaseBarSeriesBuilder()
                 .withName(data.getTicker() + " " + candleInterval.name())
-                .withNumTypeOf(DecimalNum.class)
                 .build();
 
         candles.stream().map(candle -> {
@@ -66,9 +65,9 @@ public class ProviderTBank implements DataProvider {
             ZonedDateTime zdt = Instant.ofEpochSecond(candle.getTime().getSeconds(), candle.getTime().getNanos())
                     .atZone(ZoneId.systemDefault());
 
-            return BaseBar.builder(DecimalNum::valueOf, Number.class)
+            return series.barBuilder()
                     .timePeriod(Utils.duration(candleInterval))
-                    .endTime(Utils.endTime(zdt, candleInterval))
+                    .endTime(Utils.endTime(zdt, candleInterval).toInstant())
                     .openPrice(Utils.quotationToNum(candle.getOpen()))
                     .closePrice(Utils.quotationToNum(candle.getClose()))
                     .lowPrice(Utils.quotationToNum(candle.getLow()))

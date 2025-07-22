@@ -17,6 +17,3 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
-
-signal:
-  live-time-minutes: 10

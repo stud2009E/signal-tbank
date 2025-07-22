@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pab.ta.handler.base.lib.asset.AssetInfo;
 import pab.ta.handler.base.lib.asset.CandleInterval;
-import pab.ta.handler.base.lib.signal.SignalProducer;
+import pab.ta.handler.base.lib.signal.AbstractSignalProducer;
 import pab.ta.handler.tbank.provider.SearchTProvider;
 import pab.ta.handler.tbank.rest.search.dto.AssetInfoDto;
 import pab.ta.handler.tbank.rest.search.dto.IndicatorDto;
@@ -29,7 +29,7 @@ import static pab.ta.handler.base.lib.asset.AssetType.*;
 public class SearchController {
 
     private final SearchTProvider provider;
-    private final List<SignalProducer> producers;
+    private final List<AbstractSignalProducer> producers;
 
 
     @GetMapping(path = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -62,7 +62,7 @@ public class SearchController {
     @GetMapping(path = "/indicator", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<IndicatorDto>> indicator() {
         return ResponseEntity.ok(producers.stream()
-                .map(producer -> new IndicatorDto(producer.getIndicatorId(), producer.getDirection().name()))
+                .map(producer -> new IndicatorDto(producer.getType().name()))
                 .toList());
     }
 }

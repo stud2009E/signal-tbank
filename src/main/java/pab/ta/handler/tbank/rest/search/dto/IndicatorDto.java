@@ -8,6 +8,5 @@ import lombok.Getter;
 public class IndicatorDto {
 
     private String name;
-    private String direction;
 
 }
