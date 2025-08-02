@@ -34,8 +34,8 @@ public class AssetInfoTProvider implements AssetInfoProvider {
     public List<AssetInfo> info() {
         var assetInfo = shareInfo();
 
-        assetInfo.addAll(futureInfo());
-        assetInfo.addAll(currencyInfo());
+//        assetInfo.addAll(futureInfo());
+//        assetInfo.addAll(currencyInfo());
 
         return assetInfo;
     }
