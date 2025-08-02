@@ -36,7 +36,8 @@ public class SignalController {
                 .map(signal ->
                         new SignalDto()
                                 .setTicker(signal.getTicker())
-                                .setType(signal.getType().name())
+                                .setType(String.join("-", signal.getTypes()
+                                        .stream().map(Enum::name).toList()))
                                 .setInterval(signal.getInterval().name())
                                 .setName(signal.getName())
                                 .setCreatedAt(signal.getCreatedAt())

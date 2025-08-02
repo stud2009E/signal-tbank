@@ -62,7 +62,11 @@ public class SearchController {
     @GetMapping(path = "/indicator", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<IndicatorDto>> indicator() {
         return ResponseEntity.ok(producers.stream()
-                .map(producer -> new IndicatorDto(producer.getType().name()))
+                .map(producer -> new IndicatorDto(String.join(" ",
+                        producer.getTypes()
+                                .stream()
+                                .map(Enum::name)
+                                .toList())))
                 .toList());
     }
 }
