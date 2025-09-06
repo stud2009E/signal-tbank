@@ -29,6 +29,7 @@ public class Utils {
     public static ru.tinkoff.piapi.contract.v1.CandleInterval toTBankInterval(CandleInterval interval) {
         return switch (interval) {
             case H1 -> CANDLE_INTERVAL_HOUR;
+            case H2 -> CANDLE_INTERVAL_2_HOUR;
             case H4 -> CANDLE_INTERVAL_4_HOUR;
             case DAY -> CANDLE_INTERVAL_DAY;
         };
@@ -37,6 +38,7 @@ public class Utils {
     public static Duration duration(CandleInterval interval) {
         return switch (interval) {
             case H1 -> Duration.ofHours(1);
+            case H2 -> Duration.ofHours(2);
             case H4 -> Duration.ofHours(4);
             case DAY -> Duration.ofDays(1);
         };
@@ -45,6 +47,7 @@ public class Utils {
     public static ZonedDateTime endTime(ZonedDateTime zdt, CandleInterval interval) {
         return switch (interval) {
             case H1 -> zdt.plusHours(1);
+            case H2 -> zdt.plusHours(2);
             case H4 -> zdt.plusHours(4);
             case DAY -> zdt.plusDays(1);
         };

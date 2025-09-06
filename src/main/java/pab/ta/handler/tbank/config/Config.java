@@ -23,7 +23,7 @@ public class Config {
 
     @Bean
     public InvestApi investApi() {
-        return InvestApi.create(token);
+        return InvestApi.createReadonly(token);
     }
 
     @Bean

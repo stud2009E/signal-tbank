@@ -18,7 +18,7 @@
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <piapi.version>1.5</piapi.version>
-        <signal.boot.version>0.0.6-SNAPSHOT</signal.boot.version>
+        <signal.boot.version>0.0.8-SNAPSHOT</signal.boot.version>
     </properties>
 
     <dependencyManagement>
