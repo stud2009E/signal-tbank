@@ -18,13 +18,6 @@ import static ru.tinkoff.piapi.contract.v1.CandleInterval.*;
  */
 public class Utils {
 
-    public static Num quotationToNum(Quotation quotation) {
-        BigDecimal bigDecimal = quotation.getUnits() == 0 && quotation.getNano() == 0
-                ? BigDecimal.ZERO
-                : BigDecimal.valueOf(quotation.getUnits()).add(BigDecimal.valueOf(quotation.getNano(), 9));
-
-        return DecimalNum.valueOf(bigDecimal.doubleValue());
-    }
 
     public static ru.tinkoff.piapi.contract.v1.CandleInterval toTBankInterval(CandleInterval interval) {
         return switch (interval) {

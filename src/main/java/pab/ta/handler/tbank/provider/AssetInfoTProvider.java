@@ -8,16 +8,15 @@ import org.springframework.stereotype.Component;
 import pab.ta.handler.base.lib.asset.AssetInfo;
 import pab.ta.handler.base.lib.asset.AssetType;
 import pab.ta.handler.base.lib.provider.AssetInfoProvider;
-import pab.ta.handler.tbank.exception.BrokerApiException;
-import ru.tinkoff.piapi.contract.v1.InstrumentStatus;
+import ru.tinkoff.piapi.contract.v1.InstrumentsRequest;
+import ru.tinkoff.piapi.contract.v1.InstrumentsServiceGrpc.InstrumentsServiceBlockingStub;
 import ru.tinkoff.piapi.contract.v1.RealExchange;
-import ru.tinkoff.piapi.core.InvestApi;
+import ru.ttech.piapi.core.connector.SyncStubWrapper;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import static pab.ta.handler.base.lib.asset.AssetType.SHARE;
@@ -27,7 +26,7 @@ import static pab.ta.handler.base.lib.asset.AssetType.SHARE;
 @Slf4j
 public class AssetInfoTProvider implements AssetInfoProvider {
 
-    private final InvestApi investApi;
+    private final SyncStubWrapper<InstrumentsServiceBlockingStub> instrumentService;
 
     @Cacheable(value = "assets")
     @Override
@@ -46,19 +45,16 @@ public class AssetInfoTProvider implements AssetInfoProvider {
      * @return Assets data.
      */
     private List<AssetInfo> currencyInfo() {
-        var future = investApi.getInstrumentsService().getCurrencies(InstrumentStatus.INSTRUMENT_STATUS_BASE);
+        var currencies = instrumentService.callSyncMethod(stub ->
+                stub.currencies(InstrumentsRequest.getDefaultInstance()));
 
-        try {
-            log.info("Gets assets");
+        log.info("Gets currencies");
 
-            return future.get()
-                    .stream()
-                    .map(asset ->
-                            new AssetInfo(asset.getUid(), asset.getTicker(), AssetType.CURRENCY, asset.getName()))
-                    .collect(Collectors.toList());
-        } catch (InterruptedException | ExecutionException ex) {
-            throw new BrokerApiException(ex.getMessage());
-        }
+        return currencies.getInstrumentsList().stream()
+                .map(asset -> new AssetInfo(
+                        asset.getUid(),
+                        asset.getTicker(), AssetType.CURRENCY, asset.getName()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -67,26 +63,18 @@ public class AssetInfoTProvider implements AssetInfoProvider {
      * @return Assets data.
      */
     private List<AssetInfo> futureInfo() {
-        var future = investApi.getInstrumentsService().getFutures(InstrumentStatus.INSTRUMENT_STATUS_BASE);
+        var futures = instrumentService.callSyncMethod(stub ->
+                stub.futures(InstrumentsRequest.getDefaultInstance()));
+        return futures.getInstrumentsList().stream()
+                .filter(future -> {
+                    Timestamp ltd = future.getLastTradeDate();
+                    LocalDate lastTradeDate = Instant.ofEpochSecond(ltd.getSeconds(), ltd.getNanos())
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate();
 
-        try {
-            return future.get()
-                    .stream()
-                    .filter(future1 -> {
-                        Timestamp ltd = future1.getLastTradeDate();
-                        LocalDate lastTradeDate = Instant
-                                .ofEpochSecond(ltd.getSeconds(), ltd.getNanos())
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDate();
-
-                        return LocalDate.now().plusMonths(3).isAfter(lastTradeDate);
-                    })
-                    .map(asset ->
-                            new AssetInfo(asset.getUid(), asset.getTicker(), AssetType.FUTURE, asset.getName()))
-                    .collect(Collectors.toList());
-        } catch (InterruptedException | ExecutionException ex) {
-            throw new BrokerApiException(ex.getMessage());
-        }
+                    return LocalDate.now().plusMonths(3).isAfter(lastTradeDate);
+                }).map(asset -> new AssetInfo(asset.getUid(), asset.getTicker(), AssetType.FUTURE, asset.getName()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -95,20 +83,14 @@ public class AssetInfoTProvider implements AssetInfoProvider {
      * @return Assets data.
      */
     private List<AssetInfo> shareInfo() {
-        var future = investApi.getInstrumentsService().getShares(InstrumentStatus.INSTRUMENT_STATUS_BASE);
+        var shares = instrumentService.callSyncMethod(stub ->
+                stub.shares(InstrumentsRequest.getDefaultInstance()));
 
-        try {
-            return future
-                    .get()
-                    .stream()
-                    .filter(asset ->
-                            asset.getRealExchange().equals(RealExchange.REAL_EXCHANGE_MOEX)
-                                    && asset.getClassCode().equals("TQBR"))
-                    .map(asset ->
-                            new AssetInfo(asset.getUid(), asset.getTicker(), SHARE, asset.getName()))
-                    .collect(Collectors.toList());
-        } catch (InterruptedException | ExecutionException ex) {
-            throw new BrokerApiException(ex.getMessage());
-        }
+        return shares.getInstrumentsList().stream()
+                .filter(asset -> asset.getRealExchange().equals(RealExchange.REAL_EXCHANGE_MOEX)
+                        && asset.getClassCode().equals("TQBR"))
+                .map(asset ->
+                        new AssetInfo(asset.getUid(), asset.getTicker(), SHARE, asset.getName()))
+                .collect(Collectors.toList());
     }
 }
