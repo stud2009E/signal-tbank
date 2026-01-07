@@ -1,14 +1,9 @@
 package pab.ta.handler.tbank.provider.util;
 
 
-import org.ta4j.core.num.DecimalNum;
-import org.ta4j.core.num.Num;
 import pab.ta.handler.base.lib.asset.CandleInterval;
-import ru.tinkoff.piapi.contract.v1.Quotation;
 
-import java.math.BigDecimal;
 import java.time.Duration;
-import java.time.ZonedDateTime;
 
 import static ru.tinkoff.piapi.contract.v1.CandleInterval.*;
 
