@@ -8,19 +8,21 @@ import org.ta4j.core.BaseBarSeriesBuilder;
 import pab.ta.handler.base.lib.asset.AssetInfo;
 import pab.ta.handler.base.lib.asset.CandleInterval;
 import pab.ta.handler.base.lib.asset.TimeFrame;
-import pab.ta.handler.base.lib.provider.DataProvider;
+import pab.ta.handler.base.lib.provider.SeriesProvider;
 import pab.ta.handler.tbank.provider.util.Utils;
 import ru.ttech.piapi.strategy.candle.backtest.BarData;
 import ru.ttech.piapi.strategy.candle.backtest.BarsLoader;
 import ru.ttech.piapi.strategy.candle.backtest.TimeHelper;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.stream.StreamSupport;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class ProviderTBank implements DataProvider {
+public class ProviderTBank implements SeriesProvider {
 
     private final BarsLoader barsLoader;
 
@@ -48,6 +50,8 @@ public class ProviderTBank implements DataProvider {
 
 
     private BarSeries getBarSeries(AssetInfo data, ZonedDateTime from, ZonedDateTime to, CandleInterval candleInterval) {
+        log.debug("load data ticker {}, interval: {}, period: {} - {}",
+                data.getTicker(), candleInterval, from.toLocalDate(), to.toLocalDateTime());
 
         Iterable<BarData> bars = barsLoader
                 .loadBars(data.getId(), Utils.toTBankInterval(candleInterval), from.toLocalDate(), to.toLocalDate());
@@ -73,6 +77,11 @@ public class ProviderTBank implements DataProvider {
                             .volume(bar.getVolume())
                             .build();
                 }).forEach(series::addBar);
+
+        if (!series.isEmpty()) {
+            var lastBarEndTime = series.getLastBar().getEndTime();
+            log.debug("last bar end time: {}", LocalDateTime.ofInstant(lastBarEndTime, ZoneId.systemDefault()));
+        }
 
         return series;
     }

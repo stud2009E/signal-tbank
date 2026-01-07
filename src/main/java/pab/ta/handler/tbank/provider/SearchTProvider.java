@@ -17,15 +17,15 @@ public class SearchTProvider implements AssetInfoSearchProvider {
     @Override
     public List<AssetInfo> search(@Nonnull String query) {
 
-        return infoTProvider.info().stream().filter(info -> {
+        return infoTProvider.info().stream()
+                .filter(info -> {
+                    var description = info.getDescription().strip().toLowerCase();
+                    var ticker = info.getTicker().strip().toLowerCase();
 
-            var description = info.getDescription().strip().toLowerCase();
-            var ticker = info.getTicker().strip().toLowerCase();
+                    var hasDescription = description.contains(query.toLowerCase());
+                    var hasTicker = ticker.contains(query.toLowerCase());
 
-            var hasDescription = description.contains(query.toLowerCase());
-            var hasTicker = ticker.contains(query.toLowerCase());
-
-            return hasDescription || hasTicker;
-        }).toList();
+                    return hasDescription || hasTicker;
+                }).toList();
     }
 }

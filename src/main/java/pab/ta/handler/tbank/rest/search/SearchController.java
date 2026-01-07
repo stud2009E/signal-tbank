@@ -63,7 +63,7 @@ public class SearchController {
     public ResponseEntity<List<IndicatorDto>> indicator() {
         return ResponseEntity.ok(producers.stream()
                 .map(producer -> new IndicatorDto(String.join(" ",
-                        producer.getTypes()
+                        producer.getIndicatorTypes()
                                 .stream()
                                 .map(Enum::name)
                                 .toList())))

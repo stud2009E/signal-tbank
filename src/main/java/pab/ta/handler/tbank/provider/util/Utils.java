@@ -36,13 +36,4 @@ public class Utils {
             case DAY -> Duration.ofDays(1);
         };
     }
-
-    public static ZonedDateTime endTime(ZonedDateTime zdt, CandleInterval interval) {
-        return switch (interval) {
-            case H1 -> zdt.plusHours(1);
-            case H2 -> zdt.plusHours(2);
-            case H4 -> zdt.plusHours(4);
-            case DAY -> zdt.plusDays(1);
-        };
-    }
 }

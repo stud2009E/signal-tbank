@@ -48,6 +48,12 @@
             <groupId>ru.tinkoff.piapi</groupId>
             <artifactId>java-sdk-strategy</artifactId>
             <version>${piapi.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.ta4j</groupId>
+                    <artifactId>ta4j-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.vavr</groupId>

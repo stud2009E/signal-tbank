@@ -1,6 +1,7 @@
 package pab.ta.handler.tbank.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
@@ -8,10 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import pab.ta.handler.base.lib.signal.AbstractSignalProducer;
 import pab.ta.handler.base.lib.signal.DvgMacdSignalProducer;
 import pab.ta.handler.base.lib.signal.MacdSignalProducer;
 import pab.ta.handler.base.lib.signal.RsiSignalProducer;
+import pab.ta.handler.base.lib.signal.SignalProducer;
 import ru.tinkoff.piapi.contract.v1.InstrumentsServiceGrpc;
 import ru.tinkoff.piapi.contract.v1.InstrumentsServiceGrpc.InstrumentsServiceBlockingStub;
 import ru.ttech.piapi.core.connector.ConnectorConfiguration;
@@ -27,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 @PropertySource("classpath:secret.properties")
 @EnableScheduling
 @EnableCaching
+@Slf4j
 public class Config {
 
     @Bean
@@ -52,19 +54,18 @@ public class Config {
         cacheManager.setCaffeine(
                 Caffeine.newBuilder()
                         .expireAfterWrite(7, TimeUnit.DAYS)
-                        .maximumSize(10_000)
-        );
+                        .maximumSize(10_000));
 
         return cacheManager;
     }
 
     @Bean
-    public List<AbstractSignalProducer> signalProducers() {
+    public List<SignalProducer> signalProducers() {
+        log.debug("App signal producers are created");
 
         return List.of(
                 new RsiSignalProducer(),
                 new MacdSignalProducer(),
-                new DvgMacdSignalProducer()
-        );
+                new DvgMacdSignalProducer());
     }
 }
