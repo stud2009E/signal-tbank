@@ -32,7 +32,12 @@ build/
 ### VS Code ###
 .vscode/
 
+### loaded data
+data-series/
 *.zip
+
+.flattened-pom.xml
+**/.flattened-pom.xml
 
 ### MAVEN ###
 .mvn/**
