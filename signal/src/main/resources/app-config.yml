@@ -2,4 +2,4 @@ signal:
   task:
     delay:
       seconds: 300
-    intervals: H1,H2,H4,DAY
+    intervals: H4,DAY
