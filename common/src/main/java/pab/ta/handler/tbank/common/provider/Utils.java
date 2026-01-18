@@ -19,6 +19,7 @@ public class Utils {
             case H2 -> CANDLE_INTERVAL_2_HOUR;
             case H4 -> CANDLE_INTERVAL_4_HOUR;
             case DAY -> CANDLE_INTERVAL_DAY;
+            case WEEK -> CANDLE_INTERVAL_WEEK;
         };
     }
 
@@ -28,6 +29,7 @@ public class Utils {
             case H2 -> Duration.ofHours(2);
             case H4 -> Duration.ofHours(4);
             case DAY -> Duration.ofDays(1);
+            case WEEK -> Duration.ofDays(7);
         };
     }
 }
