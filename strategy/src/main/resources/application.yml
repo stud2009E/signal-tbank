@@ -1,0 +1,11 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /ta
+
+spring:
+  application:
+    name: t-bank-strategy-service
+  config:
+    import:
+      - classpath:app-config.yml
