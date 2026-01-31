@@ -25,6 +25,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.ta4j</groupId>
+            <artifactId>ta4j-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>ru.tinkoff.piapi</groupId>
             <artifactId>java-sdk-strategy</artifactId>
             <scope>provided</scope>

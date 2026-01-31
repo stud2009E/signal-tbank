@@ -1,5 +1,10 @@
 signal:
   task:
     delay:
-      seconds: 600
-    intervals: H4,DAY,WEEK
+      seconds: 3600
+    intervals: DAY
+    tickers:
+
+candles:
+  download:
+    path: C:\Users\Alex\projects\java\signal-handler\signal-tbank\data-series\

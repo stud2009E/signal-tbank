@@ -25,6 +25,7 @@
         <piapi.version>1.43</piapi.version>
         <signal.boot.version>0.0.8-SNAPSHOT</signal.boot.version>
         <vavr.version>0.10.4</vavr.version>
+        <ta4j.version>0.22.1</ta4j.version>
     </properties>
 
     <dependencyManagement>
@@ -36,7 +37,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
+            <dependency>
+                <groupId>org.ta4j</groupId>
+                <artifactId>ta4j-core</artifactId>
+                <version>${ta4j.version}</version>
+            </dependency>
             <dependency>
                 <groupId>pab.ta.handler.base.boot</groupId>
                 <artifactId>signal-base-boot-starter</artifactId>
@@ -62,7 +67,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

@@ -36,6 +36,9 @@ build/
 data-series/
 *.zip
 
+### generated data
+output/
+
 .flattened-pom.xml
 **/.flattened-pom.xml
 

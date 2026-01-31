@@ -34,12 +34,6 @@ public class ProviderTBank implements SeriesProvider {
             series = getBarSeries(assetInfo, timeFrame.getFrom(), timeFrame.getTo(), timeFrame.getInterval());
         } catch (Exception ex) {
             log.error(ex.getMessage());
-            try {
-                Thread.sleep(60_000);
-                series = getBarSeries(assetInfo, timeFrame.getFrom(), timeFrame.getTo(), timeFrame.getInterval());
-            } catch (Exception ex1) {
-                log.error(ex1.getMessage());
-            }
         }
 
         return series;
@@ -48,7 +42,7 @@ public class ProviderTBank implements SeriesProvider {
 
     private BarSeries getBarSeries(AssetInfo data, ZonedDateTime from, ZonedDateTime to, CandleInterval candleInterval) {
         log.debug("load data ticker {}, interval: {}, period: {} - {}",
-                data.getTicker(), candleInterval, from.toLocalDate(), to.toLocalDateTime());
+                data.getTicker(), candleInterval, from.toLocalDateTime(), to.toLocalDateTime());
 
         Iterable<BarData> bars = barsLoader
                 .loadBars(data.getId(), Utils.toTBankInterval(candleInterval), from.toLocalDate(), to.toLocalDate());

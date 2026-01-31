@@ -1,8 +1,9 @@
 package pab.ta.handler.tbank.signal.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
@@ -39,6 +40,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class Config {
 
+    @Setter
+    @Value("${candles.download.path}")
+    private String candlesDownloadPath;
+
     @Bean
     public ConnectorConfiguration connectConfig() {
         return ConnectorConfiguration.loadPropertiesFromResources("secret.properties");
@@ -46,7 +51,11 @@ public class Config {
 
     @Bean
     public BarsLoader barsLoader(ConnectorConfiguration connectConfig) {
-        return new BarsLoader(null, connectConfig, Executors.newCachedThreadPool());
+        if (candlesDownloadPath != null && !candlesDownloadPath.endsWith("/")) {
+            candlesDownloadPath += "/";
+        }
+
+        return new BarsLoader(candlesDownloadPath, connectConfig, Executors.newCachedThreadPool());
     }
 
     @Bean
@@ -54,17 +63,6 @@ public class Config {
         var factory = ServiceStubFactory.create(connectConfig);
 
         return factory.newSyncService(InstrumentsServiceGrpc::newBlockingStub);
-    }
-
-    @Bean
-    public CacheManager cacheManager() {
-        CaffeineCacheManager cacheManager = new CaffeineCacheManager("assets");
-        cacheManager.setCaffeine(
-                Caffeine.newBuilder()
-                        .expireAfterWrite(7, TimeUnit.DAYS)
-                        .maximumSize(10_000));
-
-        return cacheManager;
     }
 
     @Bean
@@ -85,12 +83,23 @@ public class Config {
     }
 
     @Bean
-    public List<AssetDataProcessor> signalProducers(@Autowired SignalProcessor signalProcessor) {
+    public List<AssetDataProcessor> signalProducers(SignalProcessor signalProcessor) {
         log.debug("App signal producers are created");
 
         return List.of(
                 new RsiSignalProducer(signalProcessor),
                 new MacdSignalProducer(signalProcessor),
                 new DvgMacdSignalProducer(signalProcessor));
+    }
+
+    @Bean
+    public CacheManager cacheManager() {
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager("assets");
+        cacheManager.setCaffeine(
+                Caffeine.newBuilder()
+                        .expireAfterWrite(7, TimeUnit.DAYS)
+                        .maximumSize(10_000));
+
+        return cacheManager;
     }
 }

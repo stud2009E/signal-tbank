@@ -2,7 +2,9 @@ package pab.ta.handler.tbank.common.provider;
 
 import com.google.protobuf.Timestamp;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import pab.ta.handler.base.lib.asset.AssetInfo;
 import pab.ta.handler.base.lib.asset.AssetType;
@@ -25,10 +27,24 @@ public class AssetInfoTProvider implements AssetInfoProvider {
 
     private final SyncStubWrapper<InstrumentsServiceBlockingStub> instrumentService;
 
+    @Setter
+    @Value("${signal.task.tickers}")
+    private List<String> selectedTickers;
+
     @Cacheable(value = "assets")
     @Override
     public List<AssetInfo> info() {
-        var assetInfo = shareInfo();
+        var assetInfo = shareInfo()
+                .stream()
+                .filter(asset -> {
+                    if (selectedTickers.isEmpty()) {
+                        return true;
+                    }
+                    return selectedTickers.stream()
+                            .anyMatch(ticker ->
+                                    ticker.equalsIgnoreCase(asset.getTicker()));
+                })
+                .toList();
 
 //        assetInfo.addAll(futureInfo());
 //        assetInfo.addAll(currencyInfo());

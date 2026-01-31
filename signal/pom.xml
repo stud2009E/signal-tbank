@@ -24,6 +24,10 @@
             <artifactId>java-sdk-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.ta4j</groupId>
+            <artifactId>ta4j-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>ru.tinkoff.piapi</groupId>
             <artifactId>java-sdk-strategy</artifactId>
             <exclusions>
