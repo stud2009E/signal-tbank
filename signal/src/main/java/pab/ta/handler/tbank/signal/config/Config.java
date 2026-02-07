@@ -14,7 +14,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import pab.ta.handler.base.lib.provider.AssetInfoProvider;
 import pab.ta.handler.base.lib.provider.AssetInfoSearchProvider;
 import pab.ta.handler.base.lib.provider.SeriesProvider;
-import pab.ta.handler.base.lib.signal.DvgMacdSignalProducer;
 import pab.ta.handler.base.lib.signal.MacdSignalProducer;
 import pab.ta.handler.base.lib.signal.RsiSignalProducer;
 import pab.ta.handler.base.lib.signal.SignalProcessor;
@@ -22,6 +21,7 @@ import pab.ta.handler.base.lib.task.AssetDataProcessor;
 import pab.ta.handler.tbank.common.provider.AssetInfoTProvider;
 import pab.ta.handler.tbank.common.provider.ProviderTBank;
 import pab.ta.handler.tbank.common.provider.SearchTProvider;
+import pab.ta.handler.tbank.signal.producer.MacdAdxSignalProducer;
 import ru.tinkoff.piapi.contract.v1.InstrumentsServiceGrpc;
 import ru.tinkoff.piapi.contract.v1.InstrumentsServiceGrpc.InstrumentsServiceBlockingStub;
 import ru.ttech.piapi.core.connector.ConnectorConfiguration;
@@ -89,7 +89,7 @@ public class Config {
         return List.of(
                 new RsiSignalProducer(signalProcessor),
                 new MacdSignalProducer(signalProcessor),
-                new DvgMacdSignalProducer(signalProcessor));
+                new MacdAdxSignalProducer(signalProcessor));
     }
 
     @Bean

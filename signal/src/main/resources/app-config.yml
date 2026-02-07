@@ -2,7 +2,7 @@ signal:
   task:
     delay:
       seconds: 3600
-    intervals: DAY
+    intervals: H4,DAY
     tickers:
 
 candles:
